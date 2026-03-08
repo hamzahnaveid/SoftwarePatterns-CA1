@@ -1079,46 +1079,16 @@ public class Menu extends JFrame{
 		}
 		//a combo box in an dialog box that asks the admin what type of account they wish to create (deposit/current)
 	    String[] choices = { "Current Account", "Deposit Account" };
-	    String account = (String) JOptionPane.showInputDialog(null, "Please choose account type",
+	    String accountType = (String) JOptionPane.showInputDialog(null, "Please choose account type",
 	        "Account Type", JOptionPane.QUESTION_MESSAGE, null, choices, choices[1]); 
 	    
-	    if(account.equals("Current Account"))
-	    {
-	    	//create current account
-	    	boolean valid = true;
-	    	double balance = 0;
-	    	String number = String.valueOf("C" + (customerList.indexOf(customer)+1) * 10 + (customer.getAccounts().size()+1));//this simple algorithm generates the account number
-	    	ArrayList<AccountTransaction> transactionList = new ArrayList<AccountTransaction>();
-	    	int randomPIN = (int)(Math.random()*9000)+1000;
-	           String pin = String.valueOf(randomPIN);
+	    CustomerAccount account = AccountFactory.createAccount(accountType, customer, customerList);
+	    customer.getAccounts().add(account);
 	    
-	           ATMCard atm = new ATMCard(randomPIN, valid);
-	    	
-	    	CustomerCurrentAccount current = new CustomerCurrentAccount(atm, number, balance, transactionList);
-	    	
-	    	customer.getAccounts().add(current);
-	    	JOptionPane.showMessageDialog(f, "Account number = " + number +"\n PIN = " + pin  ,"Account created.",  JOptionPane.INFORMATION_MESSAGE);
-	    	
-	    	f.dispose();
-	    	admin();
-	    }
+	    JOptionPane.showMessageDialog(f, "Account number = " + account.getNumber() ,"Account created.",  JOptionPane.INFORMATION_MESSAGE);
 	    
-	    if(account.equals("Deposit Account"))
-	    {
-	    	//create deposit account
-	    	
-	    	double balance = 0, interest = 0;
-	    	String number = String.valueOf("D" + (customerList.indexOf(customer)+1) * 10 + (customer.getAccounts().size()+1));//this simple algorithm generates the account number
-	    	ArrayList<AccountTransaction> transactionList = new ArrayList<AccountTransaction>();
-	        	
-	    	CustomerDepositAccount deposit = new CustomerDepositAccount(interest, number, balance, transactionList);
-	    	
-	    	customer.getAccounts().add(deposit);
-	    	JOptionPane.showMessageDialog(f, "Account number = " + number ,"Account created.",  JOptionPane.INFORMATION_MESSAGE);
-	    	
-	    	f.dispose();
-	    	admin();
-	    }
+	    f.dispose();
+	    admin();
 	}
 	
 	public void deleteCustomer() {
