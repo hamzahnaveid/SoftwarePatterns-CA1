@@ -730,7 +730,7 @@ public class Menu extends JFrame{
 	    {
 	    	
 	    	
-	     box.addItem(customer.getAccounts().get(i).getNumber());
+	     box.addItem(customer.getAccount(i).getNumber());
 	    }
 		
 	    
@@ -764,43 +764,15 @@ public class Menu extends JFrame{
 			
 		for(int i = 0; i < customer.getAccounts().size(); i++)
 	    {
-	    	if(customer.getAccounts().get(i).getNumber() == box.getSelectedItem() )
+	    	if(customer.getAccount(i).getNumber() == box.getSelectedItem() )
 	    	{
-	    		acc = customer.getAccounts().get(i);
+	    		acc = customer.getAccount(i);
 	    	}
 	    }
 							
 		continueButton.addActionListener(new ActionListener(  ) {
 			public void actionPerformed(ActionEvent ae) {
-				String euro = "\u20ac";
-			 	double interest = 0;
-			 	boolean loop = true;
-			 	
-			 	while(loop)
-			 	{
-				String interestString = JOptionPane.showInputDialog(f, "Enter interest percentage you wish to apply: \n NOTE: Please enter a numerical value. (with no percentage sign) \n E.g: If you wish to apply 8% interest, enter '8'");//the isNumeric method tests to see if the string entered was numeric. 
-				if(isNumeric(interestString))
-				{
-					
-					interest = Double.parseDouble(interestString);
-					loop = false;
-					
-					acc.setBalance(acc.getBalance() + (acc.getBalance() * (interest/100)));
-					
-					JOptionPane.showMessageDialog(f, interest + "% interest applied. \n new balance = " + acc.getBalance() + euro ,"Success!",  JOptionPane.INFORMATION_MESSAGE);
-				}
-					
-				
-				else
-				{
-					JOptionPane.showMessageDialog(f, "You must enter a numerical value!" ,"Oops!",  JOptionPane.INFORMATION_MESSAGE);
-				}
-				
-				
-			 	}
-				
-				f.dispose();				
-			admin();				
+				applyInterest();			
 			}		
 	     });
 		
@@ -937,23 +909,7 @@ public class Menu extends JFrame{
 		JScrollPane scrollPane = new JScrollPane(textArea);
 		textPanel.add(scrollPane);
 		
-	for (int a = 0; a < customerList.size(); a++)//For each customer, for each account, it displays each transaction.
-		{
-			for (int b = 0; b < customerList.get(a).getAccounts().size(); b ++ )
-			{
-				acc = customerList.get(a).getAccounts().get(b);
-				for (int c = 0; c < customerList.get(a).getAccounts().get(b).getTransactionList().size(); c++)
-				{
-					
-					textArea.append(acc.getTransactionList().get(c).toString());
-					//Int total = acc.getTransactionList().get(c).getAmount(); //I was going to use this to keep a running total but I couldnt get it  working.
-					
-				}				
-			}				
-		}
-		
-		
-		
+		displayTransactions(textArea);
 		
 		textPanel.add(textArea);
 		content.removeAll();
@@ -1054,12 +1010,7 @@ public class Menu extends JFrame{
 		first.addActionListener(new ActionListener(  ) {
 			public void actionPerformed(ActionEvent ae) {
 				position = 0;
-				firstNameTextField.setText(customerList.get(0).getFirstName());
-				surnameTextField.setText(customerList.get(0).getSurname());
-				pPSTextField.setText(customerList.get(0).getPPS());
-				dOBTextField.setText(customerList.get(0).getDOB());
-				customerIDTextField.setText(customerList.get(0).getCustomerID());
-				passwordTextField.setText(customerList.get(0).getPassword());				
+				navigateCustomerList(position);			
 					}		
 			     });
 		
@@ -1074,12 +1025,8 @@ public class Menu extends JFrame{
 				{
 					position = position - 1;
 					
-				firstNameTextField.setText(customerList.get(position).getFirstName());
-				surnameTextField.setText(customerList.get(position).getSurname());
-				pPSTextField.setText(customerList.get(position).getPPS());
-				dOBTextField.setText(customerList.get(position).getDOB());
-				customerIDTextField.setText(customerList.get(position).getCustomerID());
-				passwordTextField.setText(customerList.get(position).getPassword());
+					navigateCustomerList(position);			
+
 				}			
 					}		
 			     });
@@ -1095,16 +1042,9 @@ public class Menu extends JFrame{
 				{
 					position = position + 1;
 					
-				firstNameTextField.setText(customerList.get(position).getFirstName());
-				surnameTextField.setText(customerList.get(position).getSurname());
-				pPSTextField.setText(customerList.get(position).getPPS());
-				dOBTextField.setText(customerList.get(position).getDOB());
-				customerIDTextField.setText(customerList.get(position).getCustomerID());
-				passwordTextField.setText(customerList.get(position).getPassword());
-				}		
-				
-				
-										
+					navigateCustomerList(position);			
+
+				}						
 					}		
 			     });
 		
@@ -1113,12 +1053,8 @@ public class Menu extends JFrame{
 			
 				position = customerList.size() - 1;
 		
-				firstNameTextField.setText(customerList.get(position).getFirstName());
-				surnameTextField.setText(customerList.get(position).getSurname());
-				pPSTextField.setText(customerList.get(position).getPPS());
-				dOBTextField.setText(customerList.get(position).getDOB());
-				customerIDTextField.setText(customerList.get(position).getCustomerID());
-				passwordTextField.setText(customerList.get(position).getPassword());								
+				navigateCustomerList(position);			
+								
 					}		
 			     });
 		
@@ -1426,6 +1362,66 @@ public class Menu extends JFrame{
 	    }  
 	    }
 		return null;
+	}
+	
+	public void displayTransactions(JTextArea textArea) {
+		for (int a = 0; a < customerList.size(); a++)//For each customer, for each account, it displays each transaction.
+		{
+			Customer customer = customerList.get(a);
+			for (int b = 0; b < customer.getAccounts().size(); b ++ )
+			{
+				acc = customer.getAccount(b);
+				for (int c = 0; c < acc.getTransactionList().size(); c++)
+				{
+					
+					textArea.append(acc.getTransaction(c).toString());
+					//Int total = acc.getTransactionList().get(c).getAmount(); //I was going to use this to keep a running total but I couldnt get it  working.
+					
+				}				
+			}				
+		}
+	}
+	
+	public void applyInterest() {
+		String euro = "\u20ac";
+	 	boolean validInput = false;
+	 	
+	 	while(!validInput)
+	 	{
+		String interestString = JOptionPane.showInputDialog(f, "Enter interest percentage you wish to apply: \n NOTE: Please enter a numerical value. (with no percentage sign) \n E.g: If you wish to apply 8% interest, enter '8'");//the isNumeric method tests to see if the string entered was numeric. 
+		if(isNumeric(interestString))
+		{
+			
+			double interest = Double.parseDouble(interestString);
+			validInput = true;
+			
+			acc.setBalance(acc.getBalance() + (acc.getBalance() * (interest/100)));
+			
+			JOptionPane.showMessageDialog(f, interest + "% interest applied. \n new balance = " + acc.getBalance() + euro ,"Success!",  JOptionPane.INFORMATION_MESSAGE);
+		}
+			
+		
+		else
+		{
+			JOptionPane.showMessageDialog(f, "You must enter a numerical value!" ,"Oops!",  JOptionPane.INFORMATION_MESSAGE);
+		}
+		
+		
+	 	}
+		
+		f.dispose();				
+	admin();	
+	}
+	
+	public void navigateCustomerList(int position) {
+		Customer customer = customerList.get(position);
+		
+		firstNameTextField.setText(customer.getFirstName());
+		surnameTextField.setText(customer.getSurname());
+		pPSTextField.setText(customer.getPPS());
+		dOBTextField.setText(customer.getDOB());
+		customerIDTextField.setText(customer.getCustomerID());
+		passwordTextField.setText(customer.getPassword());	
 	}
 	 
 	

@@ -110,6 +110,10 @@ public class Customer {
 		this.accounts = accounts;
 	}
 	
+	public CustomerAccount getAccount(int index) {
+		return this.accounts.get(index);
+	}
+	
 	public String toString()
 	{
 		return "PPS number = " + this.PPS + "\n"

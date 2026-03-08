@@ -41,6 +41,10 @@ public class CustomerAccount  {
 	{
 		return this.transactionList;
 	}
+	
+	public AccountTransaction getTransaction(int index) {
+		return this.transactionList.get(index);
+	}
 
 	//Mutator methods
 	public void setNumber(String number)
