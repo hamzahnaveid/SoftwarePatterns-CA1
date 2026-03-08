@@ -26,6 +26,10 @@ public void setInterestRate(double interestRate)
 	this.interestRate = interestRate;
 }
 
+public void applyFees() {
+	this.setBalance(getBalance()-15);
+}
+
 
 
 }

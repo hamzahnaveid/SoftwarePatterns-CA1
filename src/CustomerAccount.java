@@ -62,6 +62,9 @@ public class CustomerAccount  {
 		this.transactionList = transactionList;
 	}
 	
+	public void applyFees() {
+	}
+	
 	
 	
 }

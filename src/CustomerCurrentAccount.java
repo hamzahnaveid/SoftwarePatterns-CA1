@@ -27,4 +27,8 @@ public void setAtm(ATMCard atm)
 	this.atm = atm;
 }
 
+public void applyFees() {
+	this.setBalance(getBalance()-25);
+}
+
 }

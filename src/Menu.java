@@ -673,25 +673,10 @@ public class Menu extends JFrame{
 		continueButton.addActionListener(new ActionListener(  ) {
 			public void actionPerformed(ActionEvent ae) {
 				String euro = "\u20ac";
-			 	
 				
-				if(acc instanceof CustomerDepositAccount)
-				{
-				
-				
-				JOptionPane.showMessageDialog(f, "25" + euro + " deposit account fee aplied."  ,"",  JOptionPane.INFORMATION_MESSAGE);
-				acc.setBalance(acc.getBalance()-25);
-				JOptionPane.showMessageDialog(f, "New balance = " + acc.getBalance() ,"Success!",  JOptionPane.INFORMATION_MESSAGE);
-				}
-
-				if(acc instanceof CustomerCurrentAccount)
-				{
-				
-				
-				JOptionPane.showMessageDialog(f, "15" + euro + " current account fee aplied."  ,"",  JOptionPane.INFORMATION_MESSAGE);
-				acc.setBalance(acc.getBalance()-25);
-				JOptionPane.showMessageDialog(f, "New balance = " + acc.getBalance() ,"Success!",  JOptionPane.INFORMATION_MESSAGE);
-				}
+				JOptionPane.showMessageDialog(f, "Account fee applied."  ,"",  JOptionPane.INFORMATION_MESSAGE);
+				acc.applyFees();
+				JOptionPane.showMessageDialog(f, "New balance = " + acc.getBalance() + euro ,"Success!",  JOptionPane.INFORMATION_MESSAGE);
 				
 				
 				f.dispose();				
